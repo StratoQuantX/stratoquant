@@ -37,7 +37,7 @@ bt.summary()
 ## Installation
 
 ```bash
-pip install stratoquant
+pip install stratoquant    # Not yet
 ```
 
 Or from source:
@@ -46,6 +46,11 @@ Or from source:
 git clone https://github.com/StratoQuantX/stratoquant.git
 cd stratoquant
 pip install -e .
+```
+
+Or
+```bash
+pip install git+https://github.com/StratoQuantX/stratoquant.git # best way at the moment
 ```
 
 **Dependencies:** `numpy`, `pandas`, `scipy`, `matplotlib`, `statsmodels`, `arch`, `yfinance`, `seaborn`
