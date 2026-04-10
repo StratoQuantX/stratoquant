@@ -1,0 +1,61 @@
+from setuptools import setup, find_packages
+
+setup(
+    name='stratoquant',
+    version='2.0.0',
+    description='Quantitative finance library: pricing, greeks, volatility, backtesting, calibration',
+    long_description=open('README.md', encoding='utf-8').read() if __import__('os').path.exists('README.md') else '',
+    long_description_content_type='text/markdown',
+    author='Yassine Housseine',
+    author_email='yassine.housseine2@gmail.com',
+    url='https://github.com/StratoQuantX/stratoquant',
+    packages=find_packages(),
+    python_requires='>=3.9',
+    install_requires=[
+        'numpy>=1.24',
+        'pandas>=2.0',
+        'scipy>=1.10',
+        'matplotlib>=3.7',
+        'statsmodels>=0.14',
+        'arch>=6.0',
+        'yfinance>=0.2',
+        'seaborn>=0.12',
+    ],
+    extras_require={
+        'dev': [
+            'pytest>=7.0',
+            'pytest-cov',
+            'black',
+            'isort',
+            'mypy',
+        ],
+        'notebook': [
+            'jupyterlab',
+            'ipywidgets',
+            'plotly>=5.0',
+        ],
+    },
+    classifiers=[
+        'Development Status :: 4 - Beta',
+        'Intended Audience :: Financial and Insurance Industry',
+        'Intended Audience :: Science/Research',
+        'Topic :: Office/Business :: Financial',
+        'Topic :: Scientific/Engineering :: Mathematics',
+        'License :: OSI Approved :: Apache Software License',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
+        'Programming Language :: Python :: 3.12',
+        'Operating System :: OS Independent',
+    ],
+    keywords=[
+        'quantitative finance', 'options pricing', 'black-scholes',
+        'heston', 'greeks', 'volatility', 'backtesting', 'garch',
+        'implied volatility', 'vol surface', 'svi',
+    ],
+    license='Apache-2.0',
+    project_urls={
+        'Source':      'https://github.com/StratoQuantX/stratoquant',
+    },
+)
