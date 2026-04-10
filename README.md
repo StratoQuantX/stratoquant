@@ -2,7 +2,7 @@
 
 **A quantitative finance library for options pricing, Greeks, volatility modeling, backtesting, and market data analysis.**
 
-Built by [Yassine Housseine](https://github.com/StratoQuantX) as part of StratoQuant, a student quantitative research association.
+Built by [Yassine Housseine](https://github.com/Yaskoi) as part of StratoQuant, a student quantitative research association.
 
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.9%2B-blue)](https://www.python.org/)
