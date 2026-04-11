@@ -128,7 +128,7 @@ from .plots import (
 )
 
 # ── Package metadata ──────────────────────────────────────────────────────────────
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 __author__  = "Yassine Housseine"
 __all__ = [
     # Pricing
