@@ -338,32 +338,45 @@ class VolSurface:
         """
         df = chain.copy()
 
+        # Support both column name conventions
+        if 'implied_volatility' in df.columns:
+            iv_col = 'implied_volatility'
+        elif 'implied_vol' in df.columns:
+            iv_col = 'implied_vol'
+        else:
+            raise ValueError(
+                "chain must have an 'implied_volatility' or 'implied_vol' column. "
+                "Run compute_iv_dataframe() first if starting from raw option prices."
+            )
+
         # Filter
-        df = df[df['implied_volatility'] > min_iv]
+        df = df[df[iv_col] > min_iv]
         if 'volume' in df.columns and min_volume > 0:
             df = df[df['volume'].fillna(0) >= min_volume]
 
-        # Compute time to maturity
-        if 'expiry' in df.columns:
+        # Compute time to maturity — support 'expiry' or 'maturity' column
+        if 'maturity' in df.columns:
+            df['T'] = df['maturity'].astype(float)
+        elif 'expiry' in df.columns:
             if pd.api.types.is_datetime64_any_dtype(df['expiry']):
                 today = pd.Timestamp.today().normalize()
                 df['T'] = (df['expiry'] - today).dt.days / 365.0
             else:
                 df['T'] = df['expiry'].astype(float)
         else:
-            raise ValueError("chain must have an 'expiry' column.")
+            raise ValueError("chain must have an 'expiry' or 'maturity' column.")
 
         df = df[df['T'] > 0]
 
         # Pivot to (K × T) IV matrix
         pivot = df.pivot_table(
             index='strike', columns='T',
-            values='implied_volatility', aggfunc='mean'
+            values=iv_col, aggfunc='mean'
         ).dropna(how='all')
 
         strikes    = pivot.index.values.astype(float)
         maturities = pivot.columns.values.astype(float)
-        ivs        = pivot.values.copy()  # (n_K, n_T), NaNs where data missing
+        ivs        = pivot.values  # (n_K, n_T), NaNs where data missing
 
         # Fill NaNs via linear interpolation per row (per strike)
         for i in range(len(strikes)):
@@ -655,7 +668,7 @@ class VolSurface:
             ax.set_ylabel('Maturity T (y)', fontsize=9, color=_GRAY)
             ax.set_zlabel('IV (%)', fontsize=9, color=_GRAY)
             ax.set_title(
-                f'Implied Volatility Surface  |  S={self.spot}, r={self.r:.1%}',
+                f'Implied Volatility Surface  |  S={self.spot:.2f}, r={self.r:.1%}',
                 fontsize=11, fontweight='500', pad=12, color=_DARK
             )
             ax.tick_params(labelsize=7)
@@ -686,7 +699,7 @@ class VolSurface:
             ax.set_xlabel('Strike K', fontsize=9, color=_GRAY)
             ax.set_ylabel('Implied Vol (%)', fontsize=9, color=_GRAY)
             ax.set_title(
-                f'Vol Smiles  |  S={self.spot}, r={self.r:.1%}',
+                f'Vol Smiles  |  S={self.spot:.2f}, r={self.r:.1%}',
                 fontsize=11, fontweight='500', color=_DARK
             )
             ax.tick_params(labelsize=8, colors=_GRAY)
