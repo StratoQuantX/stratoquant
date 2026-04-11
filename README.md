@@ -407,4 +407,4 @@ stratoquant/
 
 Licensed under the [Apache License 2.0](LICENSE).
 
-Copyright 2025 Yassine Housseine
+Copyright 2026 Yassine Housseine
