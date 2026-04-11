@@ -363,7 +363,7 @@ class VolSurface:
 
         strikes    = pivot.index.values.astype(float)
         maturities = pivot.columns.values.astype(float)
-        ivs        = pivot.values  # (n_K, n_T), NaNs where data missing
+        ivs        = pivot.values.copy()  # (n_K, n_T), NaNs where data missing
 
         # Fill NaNs via linear interpolation per row (per strike)
         for i in range(len(strikes)):
