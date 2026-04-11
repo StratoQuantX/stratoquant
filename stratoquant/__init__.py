@@ -42,6 +42,8 @@ from .bs_greeks import (
 # ── Volatility ────────────────────────────────────────────────────────────────────
 from .volatility import (
     implied_volatility,
+    compute_iv_dataframe,
+    rolling_iv_dataframe,
     historical_volatility,
     realized_volatility,
 )
