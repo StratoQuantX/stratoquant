@@ -76,7 +76,7 @@ from .stats import (
 )
 
 # ── Portfolio ─────────────────────────────────────────────────────────────────────
-from .portfolio import PortfolioAnalysis
+from .portfolio import portfolio_analysis
 
 # ── Backtesting ───────────────────────────────────────────────────────────────────
 from .backtesting import (
