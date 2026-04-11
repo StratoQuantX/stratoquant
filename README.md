@@ -6,7 +6,7 @@ Built by [Yassine Housseine](https://github.com/Yaskoi) as part of StratoQuant, 
 
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.9%2B-blue)](https://www.python.org/)
-[![Version](https://img.shields.io/badge/version-1.0.0-green)](setup.py)
+[![Version](https://img.shields.io/badge/version-1.0.3-green)](setup.py)
 
 ---
 
