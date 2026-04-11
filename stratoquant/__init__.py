@@ -141,6 +141,7 @@ __all__ = [
     "all_greeks", "greeks_surface",
     # Volatility
     "implied_volatility", "historical_volatility", "realized_volatility",
+    "compute_iv_dataframe", "rolling_iv_dataframe"
     # Vol surface
     "VolSurface", "svi_raw", "fit_svi_slice",
     "check_calendar_arbitrage", "check_butterfly_arbitrage",
@@ -150,7 +151,7 @@ __all__ = [
     "cointegration_test", "adf_test", "kpss_test", "pp_test",
     "granger_causality_test", "jarque_bera_test", "shapiro_wilk_test",
     # Portfolio
-    "portfolio_analysis",
+    "PortfolioAnalysis",
     # Backtesting
     "Backtest",
     "MACrossStrategy", "RSIMeanReversion",
