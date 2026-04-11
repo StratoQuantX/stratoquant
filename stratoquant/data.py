@@ -126,22 +126,32 @@ def fetch_prices(
     if single:
         tickers = [tickers]
 
-    kwargs = dict(interval=interval, auto_adjust=auto_adjust, progress=False)
+    # Build date kwargs separately to avoid duplicate keyword conflicts
+    # across yfinance versions where the download() signature changed
     if period:
-        kwargs['period'] = period
+        date_kwargs = dict(period=period)
     else:
         start, end = _validate_dates(start, end)
-        kwargs['start'] = start
-        kwargs['end']   = end
+        date_kwargs = dict(start=start, end=end)
 
     if single:
-        raw = yf.Ticker(tickers[0]).history(**kwargs)
+        raw = yf.Ticker(tickers[0]).history(
+            interval=interval,
+            auto_adjust=auto_adjust,
+            **date_kwargs,
+        )
         if raw.empty:
             raise ValueError(f"No data returned for '{tickers[0]}'. Check ticker and date range.")
         return _standardize_ohlcv(raw, tickers[0])
 
     else:
-        raw = yf.download(tickers, progress=False, **kwargs)
+        raw = yf.download(
+            tickers,
+            interval=interval,
+            auto_adjust=auto_adjust,
+            progress=False,
+            **date_kwargs,
+        )
         if raw.empty:
             raise ValueError(f"No data returned for {tickers}. Check tickers and date range.")
 
