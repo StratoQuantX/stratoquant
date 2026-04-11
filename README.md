@@ -156,30 +156,58 @@ sq.realized_volatility(prices, window=21)
 ### Implied Volatility Surface
 
 ```python
-import numpy as np
+# ── 1. Fetch many expiries ───────────────────────────────────────────────
+expiries = sq.fetch_option_expiries('SPY')
+today    = pd.Timestamp.today()
+r        = sq.fetch_risk_free_rate('3m')
+spot     = None
 
-K = np.linspace(85, 115, 7)
-T = np.array([0.25, 0.5, 1.0, 2.0])
-IV = ...  # your (n_K, n_T) IV matrix
+# Select 4 expiries between 30 and 365 days
+selected = [e for e in expiries
+            if 30 < (pd.Timestamp(e) - today).days < 365][:4]
 
-vs = sq.VolSurface(K, T, IV, spot=100, r=0.05, method='spline')
+# ── 2. Fetch + IV par expiry ──────────────────────────────────────────────────
+all_iv = []
 
-# Interpolate at any (K, T)
-vs.get_iv(K=103, T=0.75)
+for expiry in selected:
+    chain = sq.fetch_option_chain('SPY', expiry=expiry,
+                                   option_type='call',
+                                   moneyness_range=(0.88, 1.12),
+                                   min_volume=10)
+    if spot is None:
+        spot = chain.attrs['spot']
 
-# Full smile for a given maturity
-smile = vs.get_smile(T=1.0)
+    chain['maturity'] = (pd.Timestamp(expiry) - today).days / 365
+    chain['price']    = chain['mid']
 
-# Build from option chain
-chain = sq.fetch_option_chain('SPY', expiry='2025-12-19', option_type='call')
-vs = sq.VolSurface.from_chain(chain, spot=chain.attrs['spot'], r=0.05)
+    iv = sq.compute_iv_dataframe(chain, S=spot, r=r)
+    iv = iv[iv['implied_vol'].notna() & (iv['implied_vol'] > 0.01)]
 
-# Arbitrage checks (calendar + butterfly + density)
+    if len(iv) >= 4:
+        all_iv.append(iv)
+
+# ── 3. Surface ─────────────────────────────────────────────
+combined = pd.concat(all_iv, ignore_index=True)
+vs = sq.VolSurface.from_chain(combined, spot=spot, r=r)
+print(vs)
+
+# ── 4. Utilisation ───────────────────────────────────────────────────────────
+vs.plot(kind='surface')
+vs.plot(kind='smile', T_list=[iv['maturity'].iloc[0] for iv in all_iv])
 vs.check_arbitrage()
 
-# Plot
-vs.plot(kind='surface')
-vs.plot(kind='smile', T_list=[0.5, 1.0, 2.0])
+# IV interpolated on one point
+vs.get_iv(K=spot, T=0.25)
+
+# Smile
+smile = vs.get_smile(T=0.25)
+
+# Surface DataFrame
+surface = vs.get_surface()
+
+vs_svi = sq.VolSurface.from_chain(combined, spot=spot, r=r, method='svi')
+fig = vs_svi.plot(kind='surface')
+plt.show()
 ```
 
 ### Calibration
